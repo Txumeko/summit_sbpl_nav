@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+  <master auto="start"/>
+  <param name="/use_sim_time" value="true"/>
+
+  <!-- launch robot state publisher (just to see the robot chassis) in rviz -->
+  <include file="$(find summit_gazebo)/launch/summit_double.launch" />
+
+  <!-- launch move_base_node for planning and control -->
+  <include file="$(find sbpl_lattice_planner)/launch/move_base/move_base_sbpl.xml"/>
+  <!-- remap from cmd_vel to cmd_vel1 -->
+  <!-- include file="$(find summit_sbpl_navigation)/params/move_base_sbpl.xml" / -->
+
+  <!-- adapts cmd_vel from diff to ackerman -->
+  <node name="summit_sbpl_nav" pkg="summit_sbpl_nav" type="summit_sbpl_nav" respawn="false" />
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find summit_mapping)/config/map_1.pgm" />
+
+  <node name="fake_localization" pkg="fake_localization" type="fake_localization" respawn="false" />
+
+  <include file="$(find sbpl_lattice_planner)/launch/move_base/nav_view_sbpl.xml"/>
+
+</launch>
